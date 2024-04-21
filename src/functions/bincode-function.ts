@@ -1,11 +1,39 @@
 import { app, HttpRequest, HttpResponseInit, InvocationContext } from "@azure/functions";
+const { CosmosClient } = require("@azure/cosmos");
+
+const endpoint = process.env.COSMOS_DB_ENDPOINT;
+const key = process.env.COSMOS_DB_KEY;
+const databaseId = "Items";
+const containerId = "Items";
+
+const client = new CosmosClient({ endpoint, key });
+const database = client.database(databaseId);
+const container = database.container(containerId);
 
 export async function bincodefunction(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
-    context.log(`Http function processed request for url "${request.url}"`);
+    context.log('JavaScript HTTP trigger function processed a request.');
+    context.log(request);
 
-    const name = request.query.get('name') || await request.text() || 'world';
-
-    return { body: `Hello, ${name}!` };
+    if (request.body) {
+        try {
+            const { resource: createdItem } = await container.items.create(request.body);
+            return {
+                status: 201,
+                body: createdItem
+            };
+        } catch (err) {
+            context.log(err)
+            return {
+                status: 500,
+                body: `Failed to create item. Error: ${err.message}`
+            };
+        }
+    } else {
+        return {
+            status: 400,
+            body: "Please pass a document in the request body"
+        };
+    }
 };
 
 app.http('bincode-function', {
