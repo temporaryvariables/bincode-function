@@ -1,3 +1,3 @@
-# bincode-function
+# bincodefunction
 
-https://bincodefunction.azurewebsites.net/api/bincode-function
+https://bincodefunction.azurewebsites.net/api/bincodefunction

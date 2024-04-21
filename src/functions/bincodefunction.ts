@@ -36,7 +36,7 @@ export async function bincodefunction(request: HttpRequest, context: InvocationC
     }
 };
 
-app.http('bincode-function', {
+app.http('bincodefunction', {
     methods: ['GET', 'POST'],
     authLevel: 'anonymous',
     handler: bincodefunction
